@@ -51,16 +51,29 @@ if __name__ == '__main__':
 	fig = plt.figure()
 	ax = fig.add_subplot(111)
 	plt.plot(line_points[0,:],line_points[1,:],'k-')
-	# plt.plot(line_points_ppca[0,:],line_points_ppca[1,:],'r--')
-	plt.plot(line_points_ppca_em[0,:],line_points_ppca_em[1,:],'g-.')
-	pts = guassianPlot2D(mu,C)
-	plt.plot(pts[0,:],pts[1,:],'g-.')
+
+	# Plotting ppca latent space and marginal pdf
+	# plt.plot(line_points_ppca_em[0,:],line_points_ppca_em[1,:],'g-.')
+	# pts = guassianPlot2D(mu,C)
+	# plt.plot(pts[0,:],pts[1,:],'g-.')
+
+	# Plotting fa latent space and marginal pdf
 	plt.plot(line_points_fa_em[0,:],line_points_fa_em[1,:],'r--')
 	pts_fa = guassianPlot2D(mu_fa,C_fa)
-	plt.plot(pts_fa[0,:],pts_fa[1,:],'r--')
+	plt.plot(pts_fa[0,:],pts_fa[1,:],'r-.')
 
-	plt.legend(['True latent space','PPCA_EM latent space','PPCA_EM marginal pdf','FA_EM latent space','FA_EM marginal pdf'])
-	# plt.legend(['True latent space','PPCA latent space','PPCA_EM latent space','FA_EM latent space'])
+	# Plotting data points scatter
 	ax.scatter(data[0],data[1], c='b', marker='o')
 
+	# Inference part
+	X = np.array([[-1.],[2.2]])
+	ax.scatter(X[0],X[1], c='r', marker='o')
+	Z = fa_inference(X,W_fa,mu_fa,psi)
+	ZinXSpace = matmul(W_fa,Z)+mu_fa
+	ax.scatter(ZinXSpace[0],ZinXSpace[1], c='r', marker='^')
+
+	# plt.legend(['Data points','True latent space','PPCA_EM latent space','PPCA_EM marginal pdf','FA_EM latent space','FA_EM marginal pdf','Data points','Test Point X','Latent Variable Z for X'])
+	plt.legend(['True latent space','FA_EM latent space','FA_EM marginal pdf','Data points','Test Point X','Latent Variable Z for X'])
+
+	plt.axis('equal')
 	plt.show()

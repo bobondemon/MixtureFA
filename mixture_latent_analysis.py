@@ -124,6 +124,31 @@ def fa_em(X,K):
 
 	return W, mu, psi[0]
 
+# X is of dim (DxN), where N is number of data points
+# W is of dim (DxK)
+# mu is of dim (D,1)
+# psi is of dim (D,)
+# Return:
+# 	Z, (KxN)
+def fa_inference(X,W,mu,psi):
+	# Compute the latent variables Z for X
+	X = np.array(X)
+	assert(X.ndim==2)
+	D, N = X.shape
+	assert(W.ndim==2)
+	WD, K = W.shape
+	assert(WD==D)
+	assert(mu.ndim==2)
+	assert(psi.ndim==1)
+	psi = psi.reshape((1,D))
+	assert(K<=D and K>0)
+
+	G = inv( np.eye(K) + matmul(W.T/psi,W) )  # KxK matrix
+	X_mu = X - mu  # DxN matrix
+	Z = matmul(matmul(G,W.T)/psi,X_mu)  # KxN
+
+	return Z
+
 
 # "The EM Algorithm for Mixtures of Factor Analyzers", Zoubin Ghahramani and Geoffrey E. Hinton
 # where the notations still follow ML book
