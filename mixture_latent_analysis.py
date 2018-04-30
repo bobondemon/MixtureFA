@@ -35,7 +35,7 @@ def ppca_closed_form(X,K):
 	# comput sigma2, mean of the rest D-K eigenvalues
 	sigma2 = np.mean([ eig_pairs[K+i][0] for i in range(D-K) ])
 
-	return W, mu, sigma2
+	return mu, W, sigma2
 
 # X is of dim (D,N), where N is number of data points
 # K should be the dim of latent variable z, and supposed to be smaller than D
@@ -77,7 +77,7 @@ def ppca_em(X,K):
 		W = W_new
 		sigma2 = sigma2_new
 
-	return W, mu, sigma2
+	return mu, W, sigma2
 
 # X is of dim (D,N), where N is number of data points
 # K should be the dim of latent variable z, and supposed to be smaller than D
@@ -122,7 +122,7 @@ def fa_em(X,K):
 		W = W_new
 		psi = psi_new
 
-	return W, mu, psi[0]
+	return mu, W, psi[0]
 
 # X is of dim (D,N), where N is number of data points
 # W is of dim (D,K)
@@ -131,7 +131,7 @@ def fa_em(X,K):
 # Return:
 # 	Z, (K,N)
 #	ZinXSpace, (D,N)
-def fa_inference(X,W,mu,psi):
+def fa_inference(X,mu,W,psi):
 	# Compute the latent variables Z for X
 	X = np.array(X)
 	assert(X.ndim==2)

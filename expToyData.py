@@ -34,14 +34,14 @@ if __name__ == '__main__':
 	# 	mu, (D,1)
 	# 	W, (D,K)
 	# 	psi, (D,)
-	W, mu, sigma2 = ppca_em(data,1)
+	mu, W, sigma2 = ppca_em(data,1)
 	C = np.matmul(W,W.T) + sigma2*np.eye(2)
 	W = W/np.sqrt(np.sum(W*W))
 	print('ppca_em W={}'.format(W))
 	print('ppca_em sigma2={}'.format(sigma2))
 	line_points_ppca_em = np.matmul(W,[[-2, 2]])+mu
 
-	W_fa, mu_fa, psi = fa_em(data,1)
+	mu_fa, W_fa, psi = fa_em(data,1)
 	C_fa = np.matmul(W_fa,W_fa.T) + np.diag(psi)
 	W_fa = W_fa/np.sqrt(np.sum(W_fa*W_fa))
 	print('fa_em W_fa={}'.format(W_fa))
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 	# Inference part
 	X = np.array([[-1.],[2.2]])
 	ax.scatter(X[0],X[1], c='r', marker='o')
-	Z, ZinXSpace = fa_inference(X,W_fa,mu_fa,psi)
+	Z, ZinXSpace = fa_inference(X,mu_fa,W_fa,psi)
 	ax.scatter(ZinXSpace[0],ZinXSpace[1], c='r', marker='^')
 
 	# plt.legend(['Data points','True latent space','PPCA_EM latent space','PPCA_EM marginal pdf','FA_EM latent space','FA_EM marginal pdf','Data points','Test Point X','Latent Variable Z for X'])
