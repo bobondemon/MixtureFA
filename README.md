@@ -1,6 +1,6 @@
 # MixtureFA (Mixtures of Factor Analyzers)
 
-This is a toolbox written in python for training the (Mixture of) Factor Analyizer.
+This is a toolbox written in python for training/inferencing the (Mixture of) Factor Analyizer.
 
 >(Only in Mandarin) Detailed math of FA/MFA: see [blog](https://bobondemon.github.io/2018/02/11/Mixtures-of-Factor-Analyzers/)
 
@@ -19,7 +19,10 @@ This is a toolbox written in python for training the (Mixture of) Factor Analyiz
 #   W, (D,K)
 #   psi, (D,)
 from mixture_latent_analysis import fa_em
-W_fa, mu_fa, psi = fa_em(X,K)
+# Train
+mu, W, psi = fa_em(X,K)
+# Inference
+Z, ZinXSpace = fa_inference(X,mu,W,psi)
 ```
 
 ### MFA
@@ -36,7 +39,10 @@ W_fa, mu_fa, psi = fa_em(X,K)
 #   W, (M,D,K)
 #   psi, (D,)
 from mixture_latent_analysis import mfa_em
+# Train
 pi, mu, W, psi = mfa_em(X,K,M)
+# Inference
+Z, ZinXSpace = mfa_inference(X,mu,W,psi)
 ```
 
 ---
@@ -61,5 +67,4 @@ For running the toy examples, type:
 ---
 ## TODO
 
-1. 修改 comments
-2. MFA: `mu` 初始化使用 k-means
+1. MFA: `mu` 初始化使用 k-means
