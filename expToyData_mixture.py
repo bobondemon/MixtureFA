@@ -41,12 +41,12 @@ if __name__ == '__main__':
 
 	plt.title(['Cluster1 with {} of pts'.format(len(data1[0])),'Cluster2 with {} of pts'.format(len(data2[0]))])
 
-	X = np.concatenate([data1,data2],axis=1)
+	data = np.concatenate([data1,data2],axis=1)
 	# 	pi, (M,)
 	# 	mu, (M,D)
 	# 	W, (M,D,K)
 	# 	psi, (D,)
-	pi, mu, W, psi = mfa_em(X,K=1,M=2)
+	pi, mu, W, psi = mfa_em(data,K=1,M=2)
 
 	print('pi1={}; pi2={}'.format(pi[0],pi[1]))
 	print('mu1={}; mu2={}'.format(mu[0,:],mu[1,:]))
@@ -64,18 +64,31 @@ if __name__ == '__main__':
 	pts1 = guassianPlot2D(mu[0,...],C1)
 	pts2 = guassianPlot2D(mu[1,...],C2)
 
-	plt.plot(pts1[0,:],pts1[1,:],'g-',linewidth=3)
-	plt.plot(pts2[0,:],pts2[1,:],'y-',linewidth=3)
-
-	plt.legend(['MFA1','MFA2'])
-
-	plt.plot(line_points1[0,:],line_points1[1,:],'g-',linewidth=2)
-	plt.plot(line_points2[0,:],line_points2[1,:],'y-',linewidth=2)
+	plt.plot(pts1[0,:],pts1[1,:],'g-.',linewidth=2)
+	plt.plot(pts2[0,:],pts2[1,:],'y-.',linewidth=2)
 
 	ax.scatter(data1[0],data1[1], c='b', marker='o')
 	ax.scatter(data2[0],data2[1], c='r', marker='o')
 
-	plt.plot(line_points1_orig[0,:],line_points1_orig[1,:],'k-')
-	plt.plot(line_points2_orig[0,:],line_points2_orig[1,:],'k-')
+	# Inference part
+	X = np.array([[-1.5],[-2.0]])
+	ax.scatter(X[0],X[1], c='k', marker='o')
+	Z, ZinXSpace = mfa_inference(X,mu,W,psi)
+	# 	Z, (M,K,N)
+	#	ZinXSpace, (M,D,N)
+	ZinXSpace = ZinXSpace.T.reshape(2,-1)
+	ax.scatter(ZinXSpace[0],ZinXSpace[1], c='k', marker='^')
 
+	plt.legend(['MFA1','MFA2','Data Point1','Data Point2','Test Point X','Latent Variables Z for X'])
+
+	# plt.legend(['MFA1','MFA2'])
+
+	plt.plot(line_points1[0,:],line_points1[1,:],'g--',linewidth=1)
+	plt.plot(line_points2[0,:],line_points2[1,:],'y--',linewidth=1)
+
+	# plt.plot(line_points1_orig[0,:],line_points1_orig[1,:],'k--')
+	# plt.plot(line_points2_orig[0,:],line_points2_orig[1,:],'k--')
+
+	plt.axis('equal')
+	plt.grid('on')
 	plt.show()

@@ -9,7 +9,7 @@ from scipy.stats import multivariate_normal
 # based on linear-Gaussian framework, we have x ~ N(mu,C)
 # where C = WW^T + sigma2*I
 
-# X is of dim (DxN), where N is number of data points
+# X is of dim (D,N), where N is number of data points
 # K should be the dim of latent variable z, and supposed to be smaller than D
 def ppca_closed_form(X,K):
 	X = np.array(X)
@@ -37,7 +37,7 @@ def ppca_closed_form(X,K):
 
 	return W, mu, sigma2
 
-# X is of dim (DxN), where N is number of data points
+# X is of dim (D,N), where N is number of data points
 # K should be the dim of latent variable z, and supposed to be smaller than D
 def ppca_em(X,K):
 	itr_num = 50
@@ -79,7 +79,7 @@ def ppca_em(X,K):
 
 	return W, mu, sigma2
 
-# X is of dim (DxN), where N is number of data points
+# X is of dim (D,N), where N is number of data points
 # K should be the dim of latent variable z, and supposed to be smaller than D
 # Return:
 # 	mu, (D,1)
@@ -124,12 +124,13 @@ def fa_em(X,K):
 
 	return W, mu, psi[0]
 
-# X is of dim (DxN), where N is number of data points
-# W is of dim (DxK)
+# X is of dim (D,N), where N is number of data points
+# W is of dim (D,K)
 # mu is of dim (D,1)
 # psi is of dim (D,)
 # Return:
-# 	Z, (KxN)
+# 	Z, (K,N)
+#	ZinXSpace, (D,N)
 def fa_inference(X,W,mu,psi):
 	# Compute the latent variables Z for X
 	X = np.array(X)
@@ -147,12 +148,14 @@ def fa_inference(X,W,mu,psi):
 	X_mu = X - mu  # DxN matrix
 	Z = matmul(matmul(G,W.T)/psi,X_mu)  # KxN
 
-	return Z
+	ZinXSpace = matmul(W,Z)+mu
+
+	return Z, ZinXSpace
 
 
 # "The EM Algorithm for Mixtures of Factor Analyzers", Zoubin Ghahramani and Geoffrey E. Hinton
 # where the notations still follow ML book
-# X is of dim (DxN), where N is number of data points
+# X is of dim (D,N), where N is number of data points
 # K should be the dim of latent variable z, and supposed to be smaller than D
 # M should be the number of mixtures, which must less than N
 # We have the following relationship
@@ -268,3 +271,40 @@ def mfa_em(X,K,M):
 		psi = psi_new  # 1xD matrix
 
 	return pi, mu.reshape(M,D), W, psi[0]
+
+# X is of dim (D,N), where N is number of data points
+# W is of dim (M,D,K)
+# mu is of dim (M,D)
+# psi is of dim (D,)
+# Return:
+# 	Z, (M,K,N)
+#	ZinXSpace, (M,D,N)
+def mfa_inference(X,mu,W,psi):
+	# Compute the latent variables Z for X
+	X = np.array(X)
+	assert(X.ndim==2)
+	D, N = X.shape
+	assert(W.ndim==3)
+	M, WD, K = W.shape
+	assert(WD==D)
+	assert(mu.ndim==2)
+	muM, muD = mu.shape
+	assert(muM==M)
+	assert(muD==D)
+	assert(psi.ndim==1)
+	psi = psi.reshape((1,D))
+	assert(K<=D and K>0)
+
+	Z = np.ones((M,K,N))
+	ZinXSpace = np.ones((M,D,N))
+
+	for midx in range(M):
+		G = inv( np.eye(K) + matmul(W[midx,...].T/psi,W[midx,...]) )  # KxK matrix
+		tmpM = mu[midx,...].reshape((D,1))
+		X_mu = X - tmpM  # DxN matrix
+		tmpZ = matmul(matmul(G,W[midx,...].T)/psi,X_mu)  # KxN
+		tmpZinXSpace = matmul(W[midx,...],tmpZ)+tmpM
+		Z[midx,...] = tmpZ
+		ZinXSpace[midx,...] = tmpZinXSpace
+
+	return Z, ZinXSpace
