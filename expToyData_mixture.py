@@ -71,13 +71,14 @@ if __name__ == '__main__':
 	ax.scatter(data2[0],data2[1], c='r', marker='o')
 
 	# Inference part
-	X = np.array([[-1.5],[-2.0]])
-	ax.scatter(X[0],X[1], c='k', marker='o')
+	X = np.array([[-1.0],[-1.0]])
+	# X = np.array([[-1.5],[-2.0]])
+	ax.scatter(X[0],X[1],s=[60], c='k', marker='o')
 	Z, ZinXSpace = mfa_inference(X,mu,W,psi)
 	# 	Z, (M,K,N)
 	#	ZinXSpace, (M,D,N)
 	ZinXSpace = ZinXSpace.T.reshape(2,-1)
-	ax.scatter(ZinXSpace[0],ZinXSpace[1], c='k', marker='^')
+	ax.scatter(ZinXSpace[0],ZinXSpace[1],s=[60], c='k', marker='^')
 
 	plt.legend(['MFA1','MFA2','Data Point1','Data Point2','Test Point X','Latent Variables Z for X'])
 
@@ -90,5 +91,5 @@ if __name__ == '__main__':
 	# plt.plot(line_points2_orig[0,:],line_points2_orig[1,:],'k--')
 
 	plt.axis('equal')
-	plt.grid('on')
+	# plt.grid('on')
 	plt.show()

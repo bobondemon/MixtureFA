@@ -67,9 +67,9 @@ if __name__ == '__main__':
 
 	# Inference part
 	X = np.array([[-1.],[2.2]])
-	ax.scatter(X[0],X[1], c='r', marker='o')
+	ax.scatter(X[0],X[1],s=[60], c='r', marker='o')
 	Z, ZinXSpace = fa_inference(X,mu_fa,W_fa,psi)
-	ax.scatter(ZinXSpace[0],ZinXSpace[1], c='r', marker='^')
+	ax.scatter(ZinXSpace[0],ZinXSpace[1],s=[60], c='r', marker='^')
 
 	# plt.legend(['Data points','True latent space','PPCA_EM latent space','PPCA_EM marginal pdf','FA_EM latent space','FA_EM marginal pdf','Data points','Test Point X','Latent Variable Z for X'])
 	plt.legend(['True latent space','FA_EM latent space','FA_EM marginal pdf','Data points','Test Point X','Latent Variable Z for X'])
