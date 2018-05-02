@@ -10,6 +10,9 @@ This is a toolbox written in python for training/inferencing the (Mixture of) Fa
 ### FA
 
 ```python
+from mixture_latent_analysis import fa_em
+
+# Train
 # Input:
 #   X: (D,N) matrix, where D is obervation dimension and N is observation number
 #   K: scalar, indicates the dimension of latent space
@@ -18,16 +21,25 @@ This is a toolbox written in python for training/inferencing the (Mixture of) Fa
 #   mu, (D,1)
 #   W, (D,K)
 #   psi, (D,)
-from mixture_latent_analysis import fa_em
-# Train
 mu, W, psi = fa_em(X,K)
+
 # Inference
+# X is of dim (D,N), where N is number of data points
+# W is of dim (D,K)
+# mu is of dim (D,1)
+# psi is of dim (D,)
+# Return:
+# 	Z, (K,N)
+# 	ZinXSpace, (D,N)
 Z, ZinXSpace = fa_inference(X,mu,W,psi)
 ```
 
 ### MFA
 
 ```python
+from mixture_latent_analysis import mfa_em
+
+# Train
 # Input:
 #   X: (D,N) matrix, where D is obervation dimension and N is observation number
 #   K: scalar, indicates the dimension of latent space
@@ -38,10 +50,16 @@ Z, ZinXSpace = fa_inference(X,mu,W,psi)
 #   mu, (M,D)
 #   W, (M,D,K)
 #   psi, (D,)
-from mixture_latent_analysis import mfa_em
-# Train
 pi, mu, W, psi = mfa_em(X,K,M)
+
 # Inference
+# X is of dim (D,N), where N is number of data points
+# W is of dim (M,D,K)
+# mu is of dim (M,D)
+# psi is of dim (D,)
+# Return:
+# 	Z, (M,K,N)
+# 	ZinXSpace, (M,D,N)
 Z, ZinXSpace = mfa_inference(X,mu,W,psi)
 ```
 
